@@ -1,7 +1,6 @@
 package xyz.bnayagrawal.android.builditbigger.gcloud;
 
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -11,7 +10,7 @@ import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 
 import java.io.IOException;
 
-public class EndpointsAsyncTask extends AsyncTask<Fragment, Void, String> {
+public class EndpointsAsyncTask extends AsyncTask<EndpointsAsyncTask.Callback, Void, String> {
     private static MyApi myApiService = null;
     private Callback callback;
 
@@ -20,14 +19,8 @@ public class EndpointsAsyncTask extends AsyncTask<Fragment, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Fragment... params) {
-        try {
-            callback = (Callback) params[0];
-        } catch (ClassCastException cce) {
-            throw new UnsupportedOperationException(
-                    "Must implement callback"
-            );
-        }
+    protected String doInBackground(EndpointsAsyncTask.Callback... params) {
+        callback = (Callback) params[0];
 
         if (myApiService == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),

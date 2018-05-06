@@ -24,7 +24,7 @@ import xyz.bnayagrawal.android.jokepresenter.JokeViewActivity;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment implements EndpointsAsyncTask.Callback {
+public class MainActivityFragment extends Fragment {
 
     private Button tellJokeButton;
     private ProgressBar jokeLoadingProgress;
@@ -43,17 +43,6 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
         return root;
     }
 
-    @Override
-    public void onPostExecute(String data) {
-        if (null == data)
-            data = "";
-
-        toggleProgressVisibility(false);
-        Intent intent = new Intent(getContext(), JokeViewActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, data);
-        startActivity(intent);
-    }
-
     private void initViews(View view) {
         tellJokeButton = view.findViewById(R.id.tellJokeButton);
         jokeLoadingProgress = view.findViewById(R.id.jokeLoadingProgress);
@@ -62,7 +51,18 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
             @Override
             public void onClick(View view) {
                 toggleProgressVisibility(true);
-                new EndpointsAsyncTask().execute(MainActivityFragment.this);
+                new EndpointsAsyncTask().execute(new EndpointsAsyncTask.Callback() {
+                    @Override
+                    public void onPostExecute(String data) {
+                        if (null == data)
+                            data = "";
+
+                        toggleProgressVisibility(false);
+                        Intent intent = new Intent(getContext(), JokeViewActivity.class);
+                        intent.putExtra(Intent.EXTRA_TEXT, data);
+                        startActivity(intent);
+                    }
+                });
             }
         });
 
@@ -96,8 +96,6 @@ public class MainActivityFragment extends Fragment implements EndpointsAsyncTask
             //show interstitial ad
             if (interstitialAd.isLoaded())
                 interstitialAd.show();
-            else
-                Log.d("dd","Error");
         } else {
             jokeLoadingProgress.animate()
                     .setInterpolator(new FastOutLinearInInterpolator())
