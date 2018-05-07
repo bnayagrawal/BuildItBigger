@@ -6,3 +6,4 @@ Udacity Android Developer Nanodegree 2 Project 1
 * Android library
 * Java library
 * Google Ad-Mob
+* InstrumentedTest
